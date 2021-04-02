@@ -1,4 +1,4 @@
-import { Button, Form, Input, Alert } from "antd";
+import { Button, Form, Input, Alert, message } from "antd";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -51,6 +51,15 @@ function Register() {
   //   });
   // };
 
+  const infoError = (msg) => {
+    return message.error(`you are already registered, ${msg}`);
+  };
+
+  const successMsg = () => {
+    return message.success(
+      "you are registered, You will recieve timely emails "
+    );
+  };
   const handleClick = (e) => {
     // e.preventDefault();
     if (validateForm(errorValidation)) {
@@ -62,14 +71,18 @@ function Register() {
           batch,
         })
         .then((res) => {
-          console.log(res);
-          console.log("post succeded ! ");
+          console.log(res.status);
+          if (res.status == 200) {
+            successMsg();
+          }
         })
         .then(() => {
           setState({ name: "", email: "", batch: undefined });
         })
         .catch((er) => {
-          console.log(er);
+          setState({ name: "", email: "", batch: undefined });
+
+          return infoError(er.response.status);
         });
     }
   };
